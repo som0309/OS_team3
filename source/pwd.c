@@ -26,7 +26,7 @@ void printPath(DirectoryTree *currentDirectory, Stack *dirStack) {
         printf("/");
     }
     else{
-        InputStack(currentDirectory, currentNode, dirStack);
+        inputStack(currentDirectory, currentNode, dirStack);
         popStack();
     }
 }
