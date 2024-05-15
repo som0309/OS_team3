@@ -6,11 +6,15 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <errno.h>
+
+#ifndef HEADER_H
+#define HEADER_H
 // #include <pthread.h>
 
 #define MAX_NAME 256
 #define MAX_DIR 1024
-
+#define ERROR -1
+#define SUCCESS 0
 // 날짜 정보 - 파일이나 폴더의 수정 시간, 접근 시간에서 사용
 typedef struct date {
     int year;
@@ -39,7 +43,7 @@ typedef struct userNode {
     char name[MAX_NAME];
     char dir[MAX_DIR];
     ID id;
-    // Date date;       사용자에 Date가 필요할까? 에 대한 고민 필요
+    Date date;       
     struct userNode *nextNode; //다음 user를 가리키는 포인터로 user 탐색에 필요
 } UserNode;
 
@@ -92,3 +96,32 @@ typedef struct stack {
 //     int mode;         //접근 권한
 //     int option;       //옵션 
 // } ThreadTree;
+
+
+//====================================================================================================================
+//이 아래에 명령어들 및 소스파일에서의 함수들을 선언한다.
+//loadDirectory.c
+DirectoryTree* loadDirectory();
+
+//excuteCommand.c
+void executeCommand(DirectoryTree *currentDirectoryTree, char *command);
+
+//stack.c
+Stack* InitializeStack();
+int IsEmpty(Stack *s);
+void Push(Stack *s, char *name);
+char* Pop(Stack *s);
+
+//pwd.c
+void inputStack(DirectoryTree *currentDirectory, DirectoryNode *currentNode, Stack *dirStack);
+void popStack();
+void printPath(DirectoryTree *currentDirectory, Stack *dirStack);
+int pwd(DirectoryTree *currentDirectory, Stack *dirStack, char *option);
+
+DirectoryTree* linuxFileSystem;
+Stack* dirStack;
+UserList* userList;
+FILE* Directory;
+FILE* User;
+
+#endif
