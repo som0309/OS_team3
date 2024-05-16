@@ -122,6 +122,11 @@ void popStack();
 void printPath(DirectoryTree *currentDirectory, Stack *dirStack);
 int pwd(DirectoryTree *currentDirectory, Stack *dirStack, char *option);
 
+//cd.c
+int cd(DirectoryTree *currentDirectoryTree, char *cmd);
+int movePath(DirectoryTree *currentDirectoryTree, char *dirPath);
+int moveCurrent(DirectoryTree *currentDirectoryTree, char *dirPath);
+
 DirectoryTree* linuxFileSystem;
 Stack* dirStack;
 UserList* userList;
