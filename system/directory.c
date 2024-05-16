@@ -44,7 +44,7 @@ int readNode(DirectoryTree *currentDirectoryTree, char *temp) {
     //Node의 Permission 정보 저장 
     nodePath = strtok(NULL, " ");
     newNode->permission.mode = atoi(nodePath);
-    modeToPermission(newNode);  //permission 정보를 배열에 저장하는 코드 (755의 권한을 크기 9의 배열에 binary하게 표현)
+    // modeToPermission(newNode);  //permission 정보를 배열에 저장하는 코드 (755의 권한을 크기 9의 배열에 binary하게 표현)
     //Node 크기 저장
     nodePath = strtok(NULL, " ");
     newNode->SIZE = atoi(nodePath);
@@ -71,4 +71,13 @@ int readNode(DirectoryTree *currentDirectoryTree, char *temp) {
     //DirectoryTree에 Node를 적절한 위치에 추가하기 
     createAndAttachNode(currentDirectoryTree, nodePath, newNode, tempNode);
     return 0;
+}
+
+DirectoryNode *IsExistDir(DirectoryTree *currentDirectoryTree, char *dirName, char type) {
+    for (DirectoryNode *current = currentDirectoryTree->current->firstChild; current; current = current->nextSibling) {
+        if (!strcmp(current->name, dirName) && current->type == type) {
+            return current;
+        }
+    }
+    return NULL;
 }
