@@ -112,11 +112,20 @@ int IsEmpty(Stack *s);
 void Push(Stack *s, char *name);
 char* Pop(Stack *s);
 
+//directory.c
+int readNode(DirectoryTree *currentDirectoryTree, char *temp);
+void createAndAttachNode(DirectoryTree *currentDirectoryTree, char *str, DirectoryNode *newNode, DirectoryNode *tempNode);
+
 //pwd.c
 void inputStack(DirectoryTree *currentDirectory, DirectoryNode *currentNode, Stack *dirStack);
 void popStack();
 void printPath(DirectoryTree *currentDirectory, Stack *dirStack);
 int pwd(DirectoryTree *currentDirectory, Stack *dirStack, char *option);
+
+//cd.c
+int cd(DirectoryTree *currentDirectoryTree, char *cmd);
+int movePath(DirectoryTree *currentDirectoryTree, char *dirPath);
+int moveCurrent(DirectoryTree *currentDirectoryTree, char *dirPath);
 
 DirectoryTree* linuxFileSystem;
 Stack* dirStack;
