@@ -112,6 +112,10 @@ int IsEmpty(Stack *s);
 void Push(Stack *s, char *name);
 char* Pop(Stack *s);
 
+//directory.c
+int readNode(DirectoryTree *currentDirectoryTree, char *temp);
+void createAndAttachNode(DirectoryTree *currentDirectoryTree, char *str, DirectoryNode *newNode, DirectoryNode *tempNode);
+
 //pwd.c
 void inputStack(DirectoryTree *currentDirectory, DirectoryNode *currentNode, Stack *dirStack);
 void popStack();
