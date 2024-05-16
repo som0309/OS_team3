@@ -1,20 +1,20 @@
 #include "../header/main.h"
 
-int MoveCurrent(DirectoryTree* dirTree, char* dirPath)
+int moveCurrent(DirectoryTree* currentDirectoryTree, char* dirPath)
 {
-    TreeNode* tmpNode = NULL;
+    DirectoryNode* tempNode = NULL;
     if(strcmp(dirPath,".") == 0){
     }
     else if(strcmp(dirPath,"..") == 0){
-        if(dirTree->current != dirTree->root){
-            dirTree->current = dirTree->current->Parent;
+        if(currentDirectoryTree->current != currentDirectoryTree->root){
+            currentDirectoryTree->current = currentDirectoryTree->current->parent;
         }
     }
     else{
 
-        tmpNode = IsExistDir(dirTree, dirPath, 'd');
-        if(tmpNode != NULL){
-            dirTree->current = tmpNode;
+        tempNode = IsExistDir(currentDirectoryTree, dirPath, 'd');
+        if(tempNode != NULL){
+            currentDirectoryTree->current = tempNode;
         }
         else
             return -1;
@@ -22,52 +22,52 @@ int MoveCurrent(DirectoryTree* dirTree, char* dirPath)
     return 0;
 }
 
-int MovePath(DirectoryTree* dirTree, char* dirPath)
+int movePath(DirectoryTree* currentDirectoryTree, char* dirPath)
 {
-    TreeNode* tmpNode = NULL;
-    char tmpPath[MAX_DIR];
+    DirectoryNode* tempNode = NULL;
+    char tempPath[MAX_DIR];
     char* str = NULL;
     int val = 0;
 
-    strncpy(tmpPath, dirPath, MAX_DIR);
-    tmpNode = dirTree->current;
+    strncpy(tempPath, dirPath, MAX_DIR);
+    tempNode = currentDirectoryTree->current;
     //if input is root
     if(strcmp(dirPath, "/") == 0){
-        dirTree->current = dirTree->root;
+        currentDirectoryTree->current = currentDirectoryTree->root;
     }
     else{
         //if input is absolute path
         if(strncmp(dirPath, "/",1) == 0){
             if(strtok(dirPath, "/") == NULL){
-                return -1;
+                return ERROR;
             }
-            dirTree->current = dirTree->root;
+            currentDirectoryTree->current = currentDirectoryTree->root;
         }
         //if input is relative path
-        str = strtok(tmpPath, "/");
+        str = strtok(tempPath, "/");
         while(str != NULL){
-            val = MoveCurrent(dirTree, str);
+            val = moveCurrent(currentDirectoryTree, str);
             //if input path doesn't exist
             if(val != 0){
-                dirTree->current = tmpNode;
+                currentDirectoryTree->current = tempNode;
                 return -1;
             }
-            str = strtok( NULL, "/");
+            str = strtok(NULL, "/");
         }
     }
     return 0;
 }
 
-int cd(DirectoryTree* dirTree, char* cmd)
+int cd(DirectoryTree* currentDirectoryTree, char* cmd)
 {
-    TreeNode* tmpNode = NULL;
+    DirectoryNode* tempNode = NULL;
     char* str = NULL;
     char tmp[MAX_DIR];
     int val;
 
     if(cmd == NULL){
-        strcpy(tmp, usrList->current->dir);
-        MovePath(dirTree, tmp);
+        strcpy(tmp, userList->current->dir);
+        movePath(currentDirectoryTree, tmp);
     }
     else if(cmd[0] == '-'){
         if(strcmp(cmd, "--help") == 0){
@@ -75,39 +75,41 @@ int cd(DirectoryTree* dirTree, char* cmd)
             printf("  Change the shell working directory.\n\n");
             printf("  Options:\n");
             printf("        --help\t 이 도움말을 표시하고 끝냅니다\n");
-            return -1;
+            return ERROR;
         }
         else{
             str = strtok(cmd, "-");
             if(str == NULL){
                 printf("cd: 잘못된 연산자\n");
                 printf("Try 'cd --help' for more information.\n");
-                return -1;
+                return ERROR;
             }
             else{
             printf("cd: 부적절한 옵션 -- '%s'\n", str);
             printf("Try 'cd --help' for more information.\n");
 
-            return -1;
+            return ERROR;
             }
         }
     }
     else{
-        tmpNode = IsExistDir(dirTree, cmd, 'd');
-        if(tmpNode != NULL){
-            if(HasPermission(tmpNode, 'r') != 0){
+        tempNode = IsExistDir(currentDirectoryTree, cmd, 'd');
+        if(tempNode != NULL){
+            if(HasPermission(tempNode, 'r') != 0){
                 printf("-bash: cd: '%s': 허가거부\n", cmd);
-                return -1;
+                return ERROR;
             }
         }
-        tmpNode = IsExistDir(dirTree, cmd,  'f');
-        if(tmpNode != NULL){
+        tempNode = IsExistDir(currentDirectoryTree, cmd,  'f');
+        if(tempNode != NULL){
             printf("-bash: cd: '%s': 디렉터리가 아닙니다\n", cmd);
-            return -1;
+            return ERROR;
         }
-        val = MovePath(dirTree, cmd);
-        if(val != 0)
+        val = movePath(currentDirectoryTree, cmd);
+        if(val != 0){
             printf("-bash: cd: '%s': no such file or directory\n", cmd);
+            return ERROR;
+        }
     }
     return 0;
 }
