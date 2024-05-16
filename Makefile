@@ -1,27 +1,29 @@
-CC := gcc
-CFLAGS := -fcommon -w -D _GNU_SOURCE
-INC := -Iheader
-TARGET := LinuxOS
+CC = gcc
+CFLAGS = -Iheader
+ODIR = object
+SDIRS = source system
 
-# 소스 파일 경로
-SRC_DIRS := source system
+SOURCES = $(wildcard $(SDIRS:=/*.c))
 
-# 소스 파일과 객체 파일
-SRCS := $(wildcard source/*.c system/*.c)
-OBJS := $(SRCS:source/%.c=%.o)
-OBJS := $(OBJS:system/%.c=%.o)
+OBJECTS = $(patsubst %,$(ODIR)/%,$(notdir $(SOURCES:.c=.o)))
 
-# 규칙 정의
-$(TARGET): $(OBJS)
-        $(CC) $(OBJS) -o $(TARGET)
+TARGET = LINUXOS
 
-%.o: source/%.c
-        $(CC) $(CFLAGS) $(INC) -c $< -o $@
+$(TARGET): $(OBJECTS)
+	$(CC) -o $@ $^
 
-%.o: system/%.c
-        $(CC) $(CFLAGS) $(INC) -c $< -o $@
+$(ODIR)/%.o: source/%.c | $(ODIR)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(ODIR)/%.o: system/%.c | $(ODIR)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(ODIR):
+	mkdir -p $(ODIR)
 
 clean:
-        rm -f $(OBJS) $(TARGET)
+	rm -f $(ODIR)/*.o $(TARGET)
 
-.PHONY: clean
+all: $(TARGET)
+
+.PHONY: clean all
