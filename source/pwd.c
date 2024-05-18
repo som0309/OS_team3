@@ -41,7 +41,7 @@ void printPath(DirectoryTree *currentDirectory, Stack *dirStack) {
 
     if (currentNode == currentDirectory->root || currentNode->parent == currentDirectory->root) {
         // 루트 디렉토리인 경우
-        printf("/");
+        printf("/\n");
     }
     else {
         inputStack(currentDirectory, currentNode, dirStack);
