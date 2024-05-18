@@ -3,7 +3,7 @@
 void createAndAttachNode(DirectoryTree *currentDirectoryTree, char *nodePath, DirectoryNode *newNode, DirectoryNode *tempNode) {
     //디렉토리 구조 안에 적절하게 노드를 위치시키는 함수 
     if (nodePath) {
-        nodePath[strlen(nodePath) - 1] = '\0';
+        nodePath[strlen(nodePath)] = '\0';
         movePath(currentDirectoryTree, nodePath);
         newNode->parent = currentDirectoryTree->current;
         //현재 경로의 노드 아래에 새로운 노드를 추가하기 위해 parent를 현재 노드로 설정함
@@ -75,6 +75,7 @@ int readNode(DirectoryTree *currentDirectoryTree, char *temp) {
 
 DirectoryNode *IsExistDir(DirectoryTree *currentDirectoryTree, char *dirName, char type) {
     for (DirectoryNode *current = currentDirectoryTree->current->firstChild; current; current = current->nextSibling) {
+        // printf("%s\n",current->name);
         if (!strcmp(current->name, dirName) && current->type == type) {
             return current;
         }
