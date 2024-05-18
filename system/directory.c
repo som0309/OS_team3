@@ -73,9 +73,8 @@ int readNode(DirectoryTree *currentDirectoryTree, char *temp) {
     return 0;
 }
 
-DirectoryNode *IsExistDir(DirectoryTree *currentDirectoryTree, char *dirName, char type) {
+DirectoryNode * IsExistDir(DirectoryTree *currentDirectoryTree, char *dirName, char type) {
     for (DirectoryNode *current = currentDirectoryTree->current->firstChild; current; current = current->nextSibling) {
-        // printf("%s\n",current->name);
         if (!strcmp(current->name, dirName) && current->type == type) {
             return current;
         }
