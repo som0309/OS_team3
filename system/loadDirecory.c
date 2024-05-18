@@ -5,7 +5,7 @@ DirectoryTree* loadDirectory(){
     DirectoryTree* currentDirectoryTree = (DirectoryTree*)malloc(sizeof(DirectoryTree));
     char temp[256];
 
-    Directory = fopen("Directory.txt", "r");
+    Directory = fopen("./Directory.txt", "r");
     while(fgets(temp, 256, Directory) != NULL){
         readNode(currentDirectoryTree, temp);
     }
