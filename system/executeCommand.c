@@ -26,6 +26,7 @@ void executeCommand(DirectoryTree *currentDirectoryTree, char *command) {
         //cp 코드 구현
     } else if (!strcmp(var, "cd")) {
         var = strtok(NULL, " ");
+        cd(currentDirectoryTree, var);
         //cd 코드 구현
     } else if(!strcmp(var, "pwd")) {
         var = strtok(NULL, " ");

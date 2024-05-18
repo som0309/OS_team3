@@ -1,0 +1,2 @@
+root 0 0 2024 5 17 6 2 12 3 /
+OSManager 1000 1000 2024 5 17 6 2 12 3 /home/OSManager

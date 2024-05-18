@@ -10,15 +10,15 @@ int main(){
     //현재 유저의 정보를 유저 파일에 저장한다.
     //이후 반복문을 돌리면서 명령어를 입력받고 실행시킨다. 
     linuxFileSystem = loadDirectory();
-    // userList = LoadUserList();
+    userList = loadUserList();
     dirStack = InitializeStack();
 
-    // Login(userList, linuxFileSystem);
+    login(userList, linuxFileSystem);
     // Start();
     // SaveUserList(userList);
 
     while(1){
-        // PrintHead(linuxFileSystem, dirStack);
+        printPrompt(linuxFileSystem, dirStack);
         fgets(command, sizeof(command), stdin);
         command[strlen(command)-1] = '\0';
         executeCommand(linuxFileSystem, command);
