@@ -63,6 +63,7 @@ typedef struct userList {
 typedef struct directoryNode {
     char name[MAX_NAME];
     char type; // -는 파일, d는 디렉토리, l은 link파일
+    char viewType;
     int SIZE;
     Permission permission;
     ID id;
@@ -131,6 +132,22 @@ int pwd(DirectoryTree *currentDirectory, Stack *dirStack, char *option);
 int cd(DirectoryTree *currentDirectoryTree, char *cmd);
 int movePath(DirectoryTree *currentDirectoryTree, char *dirPath);
 int moveCurrent(DirectoryTree *currentDirectoryTree, char *dirPath);
+
+//ls.c
+void chmod_print(int chmodinfo);
+int treePreOrder(DirectoryNode* directoryNode, int nodeNum);
+int directoryLinkPrint(DirectoryNode* directoryNode);
+void ls(DirectoryTree* currentDirectoryTree, int option);
+
+//chmod.c
+DirectoryNode* find_directory(DirectoryTree* currentDirectoryTree, char* name);
+void clear_permissions(Permission* p);
+void apply_absolute_mode(Permission* p, const char* modeStr);
+void apply_relative_mode(Permission* p, const char* modeStr);
+void parse_permission_info(char* permissionInfo, Permission* change_mod);
+void ch_mod(DirectoryTree* currentDirectoryTree, char* permissionInfo, char* nodeName);
+
+
 
 //userList.c
 UserList *loadUserList();
