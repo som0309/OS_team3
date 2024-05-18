@@ -1,6 +1,6 @@
 #include "../header/main.h"
 
-void chmod_print(chmodinfo)
+void chmod_print(int chmodinfo)
 {
     int temp;
     int div = 100;
@@ -150,7 +150,7 @@ void ls(DirectoryTree* currentDirectoryTree, int option)  // option = 0 -> ls, o
 			if (directory_list[num]->viewType == 's' && directory_list[num]->type == 'd')
 			{
 				printf("d");	// 디렉토리이므로 d
-				chmod_print(directory_list[num]->permission);	// 권한 정보
+				chmod_print(directory_list[num]->permission.mode);	// 권한 정보
 				directoryLinkPrint(directory_list[num]);	// 링크 수
 				printf("4096\t");	// 디렉토리 크기 . 디렉토리 크기 항상 4096bytes (4KB)
 				// 생성 날짜 정보 print
@@ -165,7 +165,7 @@ void ls(DirectoryTree* currentDirectoryTree, int option)  // option = 0 -> ls, o
       else if (directory_list[num]->viewType == 's' && directory_list[num]->type == '-')
       {
         printf("-");		// file이므로 -
-        chmod_print(directory_list[num]->permission);
+        chmod_print(directory_list[num]->permission.mode);
         printf("1\t");  // 파일 안에 있는 정보 수 -> 파일의 링크 수
         printf("%d\t", sizeof(directory_list[num]->SIZE));		// 파일 크기
         // 생성 날짜 정보 print
@@ -199,7 +199,7 @@ void ls(DirectoryTree* currentDirectoryTree, int option)  // option = 0 -> ls, o
       if (directory_list[num]->type == 'd')
       {
         printf("d");	// 디렉토리이므로 d
-				chmod_print(directory_list[num]->permission);	// 권한 정보
+				chmod_print(directory_list[num]->permission.mode);	// 권한 정보
 				directoryLinkPrint(directory_list[num]);	// 링크 수
 				printf("4096\t");	// 디렉토리 크기 -> 디렉토리 크기 항상 4096bytes (4KB)
 				// 생성 날짜 정보 print
@@ -214,7 +214,7 @@ void ls(DirectoryTree* currentDirectoryTree, int option)  // option = 0 -> ls, o
       else if (directory_list[num]->type == '-')
       {
         printf("-");		// file이므로 -
-        chmod_print(directory_list[num]->permission);
+        chmod_print(directory_list[num]->permission.mode);
         printf("1\t");  // 파일 안에 있는 정보 수 -> 파일의 링크 수
         printf("%d\t", sizeof(directory_list[num]->SIZE));		// 파일 크기
         // 생성 날짜 정보 print
