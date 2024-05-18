@@ -33,12 +33,15 @@ void executeCommand(DirectoryTree *currentDirectoryTree, char *command) {
         pwd(currentDirectoryTree, dirStack, var);
     } else if (!strcmp(var, "ls")) {
         var = strtok(NULL, " ");
-        //ls 코드 구현
+        ls(currentDirectoryTree, var);
     } else if (!strcmp(var, "cat")) {
         var = strtok(NULL, " ");
         //cat 코드 구현
     } else if(!strcmp(var, "chmod")) {
         var = strtok(NULL, " ");
+        var1 = strtok(NULL, " ");
+        //문자열 혹은 숫자로 권한을 받아서 Permission change_mod로 바꾸는 코드 추가 필요
+        ch_mod(currentDirectoryTree, var1, var);
         //chmod 코드 구현
     } else if (!strcmp(var, "grep")) {
         var = strtok(NULL, " ");
