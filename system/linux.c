@@ -4,17 +4,16 @@ void login(UserList *userList, DirectoryTree *currentDirectoryTree) {
     UserNode *tempUser = NULL;
     char userName[MAX_NAME];
     char temp[MAX_DIR];
-
     tempUser = userList->head;
-    printf("%s\n",userList->head->name);
     printf("Users: ");
     
-    printf("%s\n", tempUser->name);
     while (tempUser) {
         printf("%s ", tempUser->name);
         tempUser = tempUser->nextNode;
     }
+
     printf("\n");
+
     while (1) {
         printf("Login as: ");
         fgets(userName, sizeof(userName), stdin);
