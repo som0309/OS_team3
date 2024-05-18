@@ -38,8 +38,7 @@ void popStack(Stack *dirStack){
 
 void printPath(DirectoryTree *currentDirectory, Stack *dirStack) {
     DirectoryNode *currentNode = currentDirectory->current;
-
-    if (currentNode == currentDirectory->root || currentNode->parent == currentDirectory->root) {
+    if (currentNode == currentDirectory->root) {
         // 루트 디렉토리인 경우
         printf("/\n");
     }
