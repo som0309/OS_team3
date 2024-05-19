@@ -6,8 +6,8 @@ int MoveCurrent(DirectoryTree* dirTree, char* dirPath)
     if(strcmp(dirPath,".") == 0){
     }
     else if(strcmp(dirPath,"..") == 0){
-        if(dirTree->current != dirTree->root){
-            dirTree->current = dirTree->current->Parent;
+        if(dirTree->current != dirTree->root){ //root에서 이전의 디렉터리로 cd 하는 경우
+            dirTree->current = dirTree->current->Parent; // 아닐 경우 부모 디렉터리로 이동
         }
     }
     else{
@@ -31,7 +31,7 @@ int MovePath(DirectoryTree* dirTree, char* dirPath)
 
     strncpy(tmpPath, dirPath, MAX_DIR);
     tmpNode = dirTree->current;
-    //if input is root
+    //입력 값이 루트로 가는 값일 때ㅐ
     if(strcmp(dirPath, "/") == 0){
         dirTree->current = dirTree->root;
     }
@@ -47,7 +47,7 @@ int MovePath(DirectoryTree* dirTree, char* dirPath)
         str = strtok(tmpPath, "/");
         while(str != NULL){
             val = MoveCurrent(dirTree, str);
-            //if input path doesn't exist
+            //경로가 존재하지 않을 때
             if(val != 0){
                 dirTree->current = tmpNode;
                 return -1;
