@@ -2,15 +2,15 @@
 #include "../header/main.h"
 DirectoryTree* loadDirectory(){
 
-    DirectoryTree* currentDirTree = (DirectoryTree*)malloc(sizeof(DirectoryTree));
-    char tmp[256];
+    DirectoryTree* currentDirectoryTree = (DirectoryTree*)malloc(sizeof(DirectoryTree));
+    char temp[256];
 
-    Directory = fopen("Directory.txt", "r");
-    while(fgets(tmp, 256, Directory) != NULL){
-        ReadNode(currentDirTree, tmp);
+    Directory = fopen("system/Directory.txt", "r");
+    while(fgets(temp, 256, Directory) != NULL){
+        readNode(currentDirectoryTree, temp);
     }
     fclose(Directory);
-    currentDirTree->current = currentDirTree->root;
-    return currentDirTree;
+    currentDirectoryTree->current = currentDirectoryTree->root;     //로그인 후 첫 시작 위치 
+    return currentDirectoryTree;
 
 }

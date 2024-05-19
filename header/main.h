@@ -10,7 +10,11 @@
 #ifndef HEADER_H
 #define HEADER_H
 // #include <pthread.h>
-
+#define DEFAULT printf("%c[%dm", 0x1B, 0)
+#define BOLD printf("%c[%dm", 0x1B, 1)
+#define WHITE printf("\x1b[37m")
+#define BLUE printf("\x1b[34m")
+#define GREEN printf("\x1b[32m")
 #define MAX_NAME 256
 #define MAX_DIR 1024
 #define ERROR -1
@@ -112,11 +116,30 @@ int IsEmpty(Stack *s);
 void Push(Stack *s, char *name);
 char* Pop(Stack *s);
 
+//directory.c
+int readNode(DirectoryTree *currentDirectoryTree, char *temp);
+void createAndAttachNode(DirectoryTree *currentDirectoryTree, char *str, DirectoryNode *newNode, DirectoryNode *tempNode);
+DirectoryNode* IsExistDir(DirectoryTree *currentDirectoryTree, char *dirName, char type);
+
 //pwd.c
 void inputStack(DirectoryTree *currentDirectory, DirectoryNode *currentNode, Stack *dirStack);
 void popStack();
 void printPath(DirectoryTree *currentDirectory, Stack *dirStack);
 int pwd(DirectoryTree *currentDirectory, Stack *dirStack, char *option);
+
+//cd.c
+int cd(DirectoryTree *currentDirectoryTree, char *cmd);
+int movePath(DirectoryTree *currentDirectoryTree, char *dirPath);
+int moveCurrent(DirectoryTree *currentDirectoryTree, char *dirPath);
+
+//userList.c
+UserList *loadUserList();
+UserNode *userExistence(UserList *userList, char *name);
+int readUser(UserList *userList, char *tmp);
+
+//linux.c
+void login(UserList *UsrList, DirectoryTree *dirTree);
+void printPrompt(DirectoryTree *dirTree, Stack *dirStack);
 
 DirectoryTree* linuxFileSystem;
 Stack* dirStack;
