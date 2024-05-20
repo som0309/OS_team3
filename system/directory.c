@@ -30,6 +30,7 @@ int readNode(DirectoryTree *currentDirectoryTree, char *temp) {
     //Directory.txt 파일에서 현재 저장된 파일 및 디렉토리 정보를 가져와 구조체로 만들어 Tree에 넣는 메소드 
     DirectoryNode *newNode = (DirectoryNode *)malloc(sizeof(DirectoryNode)), *tempNode = NULL;
     char *nodePath;
+    char *tempPath;
 
     newNode->firstChild = NULL;
     newNode->nextSibling = NULL;
@@ -38,6 +39,12 @@ int readNode(DirectoryTree *currentDirectoryTree, char *temp) {
     //폴더 및 파일명 저장 
     nodePath = strtok(temp, " ");
     strncpy(newNode->name, nodePath, MAX_NAME);
+    if (*(newNode->name) == '.'){     //숨김 속성의 파일 혹은 폴더라면 
+        newNode->viewType = '-';
+    }
+    else{
+        newNode->viewType = 's';
+    }
     //폴더 및 파일 유형 저장 (-, d, l 등)
     nodePath = strtok(NULL, " ");
     newNode->type = nodePath[0];

@@ -100,16 +100,16 @@ int directoryLinkPrint(DirectoryNode* directoryNode)
 	printf("%d\t", nodeNum);
 }
 
-void ls(DirectoryTree* currentDirectoryTree, int option)  // option = 0 -> ls, option = 1 -> ls -l, option = 2 -> ls -a, option = 3 -> ls -al
+void ls(DirectoryTree* currentDirectoryTree, char* option)  // option = 0 -> ls, option = 1 -> ls -l, option = 2 -> ls -a, option = 3 -> ls -al
 {
 	DirectoryNode* currentNode = currentDirectoryTree->current;
 	DirectoryNode* temp;
-	DirectoryNode* directory_list[20];		// 현재 디렉토리에 존재하는 파일이나 디렉토리를 담는 list
+	DirectoryNode* directory_list[MAX_DIR];		// 현재 디렉토리에 존재하는 파일이나 디렉토리를 담는 list
 	int directory_num = 0;
 
 	if (currentNode->firstChild == NULL)	// 디렉토리 안에 파일이나 다른 디렉토리가 존재하지 않으면 아무 것도 print 하지 않음
 	{
-
+		//do nothing
 	}
 	else  // 디렉토리 내의 정보 저장
 	{
@@ -123,25 +123,26 @@ void ls(DirectoryTree* currentDirectoryTree, int option)  // option = 0 -> ls, o
 			directory_list[directory_num++] = currentNode->firstChild;
 
 			while (temp != NULL)
-			{
+			{	
 				directory_list[directory_num++] = temp;
 				temp = temp->nextSibling;
 			}
 		}
 	}
 	// 저장 이후에 print 옵션
-	if (option == 0)
+	if (option == NULL)
 	{
 		int num = 0;
 		while (num < directory_num)
 		{
-			if (directory_list[num]->viewType == 's')		// 볼 수 있는 파일이면 print
+			if (directory_list[num]->viewType == 's'){	// 볼 수 있는 파일이면 print
 				printf("%s ", directory_list[num]->name);
+			}
 			num++;
 		}
 		printf("\n");
 	}
-	else if (option == 1)		// ls -l => 파일이나 디렉토리의 세부 정보 표시
+	else if (!strcmp(option, "-l"))		// ls -l => 파일이나 디렉토리의 세부 정보 표시
 	{
 		int num = 0;
 		while (num < directory_num)
@@ -162,26 +163,26 @@ void ls(DirectoryTree* currentDirectoryTree, int option)  // option = 0 -> ls, o
 				printf("month: %d\tday: %d\t%02d:%02d:%02d\t", month, day, hour, minute, second);
 				printf("%s\n", directory_list[num]->name);		// 디렉토리 이름
 			}
-      else if (directory_list[num]->viewType == 's' && directory_list[num]->type == '-')
-      {
-        printf("-");		// file이므로 -
-        chmod_print(directory_list[num]->permission.mode);
-        printf("1\t");  // 파일 안에 있는 정보 수 -> 파일의 링크 수
-        printf("%d\t", sizeof(directory_list[num]->SIZE));		// 파일 크기
-        // 생성 날짜 정보 print
-        int month = directory_list[num]->date.month + 1;
-		int day = directory_list[num]->date.day;
-		int hour = directory_list[num]->date.hour;
-		int minute = directory_list[num]->date.minute;
-		int second = directory_list[num]->date.second;
-		printf("month: %d\tday: %d\t%02d:%02d:%02d\t", month, day, hour, minute, second);
-        printf("%s\n", directory_list[num]->name);
-      }
+			else if (directory_list[num]->viewType == 's' && directory_list[num]->type == '-')
+			{
+				printf("-");		// file이므로 -
+				chmod_print(directory_list[num]->permission.mode);
+				printf("1\t");  // 파일 안에 있는 정보 수 -> 파일의 링크 수
+				printf("%d\t", sizeof(directory_list[num]->SIZE));		// 파일 크기
+				// 생성 날짜 정보 print
+				int month = directory_list[num]->date.month + 1;
+				int day = directory_list[num]->date.day;
+				int hour = directory_list[num]->date.hour;
+				int minute = directory_list[num]->date.minute;
+				int second = directory_list[num]->date.second;
+				printf("month: %d\tday: %d\t%02d:%02d:%02d\t", month, day, hour, minute, second);
+				printf("%s\n", directory_list[num]->name);
+			}
 			num++;
 		}
 		printf("\n");
 	}
-	else if (option == 2)		// ls -a => 숨김 속성을 가진 파일까지 모두 표시
+	else if (!strcmp(option, "-a"))		// ls -a => 숨김 속성을 가진 파일까지 모두 표시
 	{
 		int num = 0;
 		while (num < directory_num)
@@ -191,7 +192,7 @@ void ls(DirectoryTree* currentDirectoryTree, int option)  // option = 0 -> ls, o
 		}
 		printf("\n");
 	}
-	else		// option == 3 => ls -al => 숨김 속성을 가진 파일의 세부 정보까지 모두 표시
+	else if (!strcmp(option, "-al") || !strcmp(option, "-la"))		// option == 3 => ls -al => 숨김 속성을 가진 파일의 세부 정보까지 모두 표시
 	{
 		int num = 0;
 		while (num < directory_num)
@@ -229,5 +230,9 @@ void ls(DirectoryTree* currentDirectoryTree, int option)  // option = 0 -> ls, o
 			num++;
 		}
 		printf("\n");
+	}
+	else{
+		printf("%s\n", option);
+		printf("Invalid option. Please check the options and try again\n");	
 	}
 }

@@ -137,7 +137,7 @@ int moveCurrent(DirectoryTree *currentDirectoryTree, char *dirPath);
 void chmod_print(int chmodinfo);
 int treePreOrder(DirectoryNode* directoryNode, int nodeNum);
 int directoryLinkPrint(DirectoryNode* directoryNode);
-void ls(DirectoryTree* currentDirectoryTree, int option);
+void ls(DirectoryTree* currentDirectoryTree, char* option);
 
 //chmod.c
 DirectoryNode* find_directory(DirectoryTree* currentDirectoryTree, char* name);
