@@ -94,6 +94,19 @@ int moveCurrent(DirectoryTree* currentDirectoryTree, char* dirPath)
         }
     }
     else{
+=======
+int moveCurrent(DirectoryTree* currentDirectoryTree, char* dirPath)
+{
+    DirectoryNode* tempNode = NULL;
+    if(strcmp(dirPath,".") == 0){
+    }
+    else if(strcmp(dirPath,"..") == 0){
+        if(currentDirectoryTree->current != currentDirectoryTree->root){
+            currentDirectoryTree->current = currentDirectoryTree->current->parent;
+        }
+    }
+    else{
+>>>>>>> 78891d9ce92cb11592bec4993abe4258880f8f0b
         tempNode = IsExistDir(currentDirectoryTree, dirPath, 'd');
         if(tempNode != NULL){
             currentDirectoryTree->current = tempNode;
@@ -115,10 +128,13 @@ int movePath(DirectoryTree* currentDirectoryTree, char* dirPath)
     tempNode = currentDirectoryTree->current;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     strncpy(tmpPath, dirPath, MAX_DIR);
     tmpNode = dirTree->current;
     //입력 값이 루트로 가는 값일 때ㅐ
 =======
+=======
+>>>>>>> 78891d9ce92cb11592bec4993abe4258880f8f0b
     //if input is root
 >>>>>>> 78891d9ce92cb11592bec4993abe4258880f8f0b
     if(strcmp(dirPath, "/") == 0){
@@ -136,9 +152,12 @@ int movePath(DirectoryTree* currentDirectoryTree, char* dirPath)
         }
         while(str != NULL){
 <<<<<<< HEAD
+<<<<<<< HEAD
             val = MoveCurrent(dirTree, str);
             //경로가 존재하지 않을 때
 =======
+=======
+>>>>>>> 78891d9ce92cb11592bec4993abe4258880f8f0b
             val = moveCurrent(currentDirectoryTree, str);
             //if input path doesn't exist
 >>>>>>> 78891d9ce92cb11592bec4993abe4258880f8f0b
