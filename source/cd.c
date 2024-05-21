@@ -187,7 +187,7 @@ int cd(DirectoryTree* currentDirectoryTree, char* cmd)
         else{
             str = strtok(cmd, "-");
             if(str == NULL){
-                printf("cd: Permission denied.\n");
+                printf("cd: Permission\n");
                 printf("Try 'cd --help' for more information.\n");
                 return ERROR;
             }
