@@ -36,7 +36,29 @@ void executeCommand(DirectoryTree *currentDirectoryTree, char *command) {
         //ls 코드 구현
     } else if (!strcmp(var, "cat")) {
         var = strtok(NULL, " ");
-        //cat 코드 구현
+
+        // -n 옵션 및 > 'filename' 옵션을 확인
+        int numberFlag = 0; // -n 옵션 여부. 줄번호 출력 여부.
+        char *redirectFilename = NULL;
+        if (var != NULL && !strcmp(var, "-n"))
+        {
+            numberFlag = 1;
+            var = strtok(NULL, " ");
+        }
+        if (var != NULL && var[0] == '>')
+        {
+            redirectFilename = var + 1; // '>' 다음 문자열을 파일명으로 설정
+            var = strtok(NULL, " ");
+        }
+
+        if (var != NULL)
+        {
+            cat(currentDirectoryTree, var, numberFlag, redirectFilename);
+        }
+        else
+        {
+            printf("Usage: cat [-n] [filename] [> 'filename']\n");
+        }
     } else if(!strcmp(var, "chmod")) {
         var = strtok(NULL, " ");
         //chmod 코드 구현
