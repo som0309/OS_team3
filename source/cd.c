@@ -1,60 +1,60 @@
 #include "../header/main.h"
 
-TreeNode* IsExistDir(DirectoryTree* dirTree, char* dirName, char type)
+DirectoryNode* IsExistDir(DirectoryTree* dirTree, char* dirName, char type)
 {
     //variables
-    TreeNode* returnNode = NULL;
+    DirectoryNode* returnNode = NULL;
 
-    returnNode = dirTree->current->LeftChild;
+    returnNode = dirTree->current->firstChild;
 
     while(returnNode != NULL){
         if(strcmp(returnNode->name, dirName) == 0 && returnNode->type == type)
             break;
-        returnNode = returnNode->RightSibling;
+        returnNode = returnNode->nextSibling;
     }
     return returnNode;
 }
 
-int HasPermission(TreeNode* dirNode, char o)
+int HasPermission(DirectoryNode* dirNode, char o)
 {
-    if(usrList->current->UID == 0)
+    if(userList->current->id.UID == 0)
         return 0;
 
-    if(usrList->current->UID == dirNode->UID){
+    if(userList->current->id.UID == dirNode->id.UID){
         if(o == 'r'){
-            if(dirNode->permission[0] == 0)
+            if(dirNode->permission.permission[0] == 0)
                 return -1;
             else
                 return 0;
         }
         if(o == 'w'){
-            if(dirNode->permission[1] == 0)
+            if(dirNode->permission.permission[1] == 0)
                 return -1;
             else
                 return 0;
         }
         if(o == 'x'){
-            if(dirNode->permission[2] == 0)
+            if(dirNode->permission.permission[2] == 0)
                 return -1;
             else
                 return 0;
         }
     }
-    else if(usrList->current->GID == dirNode->GID){
+    else if(userList->current->id.GID == dirNode->id.GID){
         if(o == 'r'){
-            if(dirNode->permission[3] == 0)
+            if(dirNode->permission.permission[3] == 0)
                 return -1;
             else
                 return 0;
         }
         if(o == 'w'){
-            if(dirNode->permission[4] == 0)
+            if(dirNode->permission.permission[4] == 0)
                 return -1;
             else
                 return 0;
         }
         if(o == 'x'){
-            if(dirNode->permission[5] == 0)
+            if(dirNode->permission.permission[5] == 0)
                 return -1;
             else
                 return 0;
@@ -62,19 +62,19 @@ int HasPermission(TreeNode* dirNode, char o)
     }
     else{
         if(o == 'r'){
-            if(dirNode->permission[6] == 0)
+            if(dirNode->permission.permission[6] == 0)
                 return -1;
             else
                 return 0;
         }
         if(o == 'w'){
-            if(dirNode->permission[7] == 0)
+            if(dirNode->permission.permission[7] == 0)
                 return -1;
             else
                 return 0;
         }
         if(o == 'x'){
-            if(dirNode->permission[8] == 0)
+            if(dirNode->permission.permission[8] == 0)
                 return -1;
             else
                 return 0;
@@ -94,7 +94,9 @@ int moveCurrent(DirectoryTree* currentDirectoryTree, char* dirPath)
         }
     }
     else{
-=======
+
+    }
+}
 int moveCurrent(DirectoryTree* currentDirectoryTree, char* dirPath)
 {
     DirectoryNode* tempNode = NULL;
@@ -106,7 +108,6 @@ int moveCurrent(DirectoryTree* currentDirectoryTree, char* dirPath)
         }
     }
     else{
->>>>>>> 78891d9ce92cb11592bec4993abe4258880f8f0b
         tempNode = IsExistDir(currentDirectoryTree, dirPath, 'd');
         if(tempNode != NULL){
             currentDirectoryTree->current = tempNode;
@@ -127,16 +128,10 @@ int movePath(DirectoryTree* currentDirectoryTree, char* dirPath)
     tempPath[MAX_DIR - 1] = '\0'; // 보안을 위해 널 종료 문자를 추가
     tempNode = currentDirectoryTree->current;
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-    strncpy(tmpPath, dirPath, MAX_DIR);
-    tmpNode = dirTree->current;
+    strncpy(tempPath, dirPath, MAX_DIR);
+    tempNode = currentDirectoryTree->current;
     //입력 값이 루트로 가는 값일 때ㅐ
-=======
-=======
->>>>>>> 78891d9ce92cb11592bec4993abe4258880f8f0b
-    //if input is root
->>>>>>> 78891d9ce92cb11592bec4993abe4258880f8f0b
+
     if(strcmp(dirPath, "/") == 0){
         currentDirectoryTree->current = currentDirectoryTree->root;
     }
@@ -151,16 +146,8 @@ int movePath(DirectoryTree* currentDirectoryTree, char* dirPath)
             str = strtok(tempPath, "/");
         }
         while(str != NULL){
-<<<<<<< HEAD
-<<<<<<< HEAD
-            val = MoveCurrent(dirTree, str);
-            //경로가 존재하지 않을 때
-=======
-=======
->>>>>>> 78891d9ce92cb11592bec4993abe4258880f8f0b
             val = moveCurrent(currentDirectoryTree, str);
             //if input path doesn't exist
->>>>>>> 78891d9ce92cb11592bec4993abe4258880f8f0b
             if(val != 0){
                 currentDirectoryTree->current = tempNode; // Restore original current node
                 return -1;

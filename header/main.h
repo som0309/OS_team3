@@ -6,10 +6,10 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <errno.h>
+#include <pthread.h>
+
 
 #ifndef HEADER_H
-#define HEADER_H
-// #include <pthread.h>
 #define DEFAULT printf("%c[%dm", 0x1B, 0)
 #define BOLD printf("%c[%dm", 0x1B, 1)
 #define WHITE printf("\x1b[37m")
@@ -147,7 +147,9 @@ void apply_relative_mode(Permission* p, const char* modeStr);
 void parse_permission_info(char* permissionInfo, Permission* change_mod);
 void ch_mod(DirectoryTree* currentDirectoryTree, char* permissionInfo, char* nodeName);
 
-
+//mkdir.c
+int MakeDir(DirectoryTree* currentDirectoryTree, char* dirName, char type);
+int Mkdir(DirectoryTree* currentDirectoryTree, char* cmd);
 
 //userList.c
 UserList *loadUserList();
