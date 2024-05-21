@@ -127,11 +127,9 @@ int movePath(DirectoryTree* currentDirectoryTree, char* dirPath)
     strncpy(tempPath, dirPath, MAX_DIR);
     tempPath[MAX_DIR - 1] = '\0'; // 보안을 위해 널 종료 문자를 추가
     tempNode = currentDirectoryTree->current;
-
-    strncpy(tempPath, dirPath, MAX_DIR);
-    tempNode = currentDirectoryTree->current;
-    //입력 값이 루트로 가는 값일 때ㅐ
-
+    
+    //입력 값이 루트로 가는 값일 때
+    //if input is root
     if(strcmp(dirPath, "/") == 0){
         currentDirectoryTree->current = currentDirectoryTree->root;
     }
@@ -146,6 +144,7 @@ int movePath(DirectoryTree* currentDirectoryTree, char* dirPath)
             str = strtok(tempPath, "/");
         }
         while(str != NULL){
+
             val = moveCurrent(currentDirectoryTree, str);
             //if input path doesn't exist
             if(val != 0){
@@ -171,16 +170,16 @@ int cd(DirectoryTree* currentDirectoryTree, char* cmd)
     }
     else if(cmd[0] == '-'){
         if(strcmp(cmd, "--help") == 0){
-            printf("사용법: cd 디렉터리...\n");
+            printf("how to use cd: \n");
             printf("  Change the shell working directory.\n\n");
             printf("  Options:\n");
-            printf("        --help\t 이 도움말을 표시하고 끝냅니다\n");
+            printf("        --help\t\n");
             return ERROR;
         }
         else{
             str = strtok(cmd, "-");
             if(str == NULL){
-                printf("cd: 잘못된 연산자\n");
+                printf("cd: Permission denied.\n");
                 printf("Try 'cd --help' for more information.\n");
                 return ERROR;
             }
