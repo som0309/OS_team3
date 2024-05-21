@@ -1,9 +1,9 @@
 #include "../header/main.h"
 
-TreeNode* IsExistDir(DirectoryTree* dirTree, char* dirName, char type)
+DirectoryTreeNode* IsExistDir(DirectoryTree* dirTree, char* dirName, char type)
 {
     //variables
-    TreeNode* returnNode = NULL;
+    DirectoryTreeNode* returnNode = NULL;
 
     returnNode = dirTree->current->LeftChild;
 
@@ -15,7 +15,7 @@ TreeNode* IsExistDir(DirectoryTree* dirTree, char* dirName, char type)
     return returnNode;
 }
 
-int HasPermission(TreeNode* dirNode, char o)
+int HasPermission(DirectoryTreeNode* dirNode, char o)
 {
     if(usrList->current->UID == 0)
         return 0;
@@ -106,7 +106,6 @@ int moveCurrent(DirectoryTree* currentDirectoryTree, char* dirPath)
         }
     }
     else{
->>>>>>> 78891d9ce92cb11592bec4993abe4258880f8f0b
         tempNode = IsExistDir(currentDirectoryTree, dirPath, 'd');
         if(tempNode != NULL){
             currentDirectoryTree->current = tempNode;
@@ -134,9 +133,7 @@ int movePath(DirectoryTree* currentDirectoryTree, char* dirPath)
     //입력 값이 루트로 가는 값일 때ㅐ
 =======
 =======
->>>>>>> 78891d9ce92cb11592bec4993abe4258880f8f0b
     //if input is root
->>>>>>> 78891d9ce92cb11592bec4993abe4258880f8f0b
     if(strcmp(dirPath, "/") == 0){
         currentDirectoryTree->current = currentDirectoryTree->root;
     }
@@ -155,12 +152,9 @@ int movePath(DirectoryTree* currentDirectoryTree, char* dirPath)
 <<<<<<< HEAD
             val = MoveCurrent(dirTree, str);
             //경로가 존재하지 않을 때
-=======
-=======
->>>>>>> 78891d9ce92cb11592bec4993abe4258880f8f0b
+
             val = moveCurrent(currentDirectoryTree, str);
             //if input path doesn't exist
->>>>>>> 78891d9ce92cb11592bec4993abe4258880f8f0b
             if(val != 0){
                 currentDirectoryTree->current = tempNode; // Restore original current node
                 return -1;
@@ -184,16 +178,16 @@ int cd(DirectoryTree* currentDirectoryTree, char* cmd)
     }
     else if(cmd[0] == '-'){
         if(strcmp(cmd, "--help") == 0){
-            printf("사용법: cd 디렉터리...\n");
+            printf("how to use cd: \n");
             printf("  Change the shell working directory.\n\n");
             printf("  Options:\n");
-            printf("        --help\t 이 도움말을 표시하고 끝냅니다\n");
+            printf("        --help\t\n");
             return ERROR;
         }
         else{
             str = strtok(cmd, "-");
             if(str == NULL){
-                printf("cd: 잘못된 연산자\n");
+                printf("cd: Permission denied.\n");
                 printf("Try 'cd --help' for more information.\n");
                 return ERROR;
             }

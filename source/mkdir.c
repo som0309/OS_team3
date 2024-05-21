@@ -2,8 +2,8 @@
 
 int MakeDir(DirectoryTree* dirTree, char* dirName, char type)
 {
-    TreeNode* NewNode = (TreeNode*)malloc(sizeof(TreeNode));
-    TreeNode* tmpNode = NULL;
+    DirectoryTreeNode* NewNode = (DirectoryTreeNode*)malloc(sizeof(DirectoryTreeNode));
+    DirectoryTreeNode* tmpNode = NULL;
 
     if(HasPermission(dirTree->current, 'w') != 0){
         printf("mkdir: '%s' Can not create directory: Permission denied.\n", dirName);
@@ -72,7 +72,7 @@ int MakeDir(DirectoryTree* dirTree, char* dirName, char type)
 
 int Mkdir(DirectoryTree* dirTree, char* cmd)
 {
-    TreeNode *tmpNode = NULL;
+    DirectoryTreeNode *tmpNode = NULL;
     char *str;
     int isDirectoryExist;
     int tmpMode;
