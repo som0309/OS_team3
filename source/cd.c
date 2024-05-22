@@ -168,6 +168,13 @@ int cd(DirectoryTree* currentDirectoryTree, char* cmd)
             printf("    Options:\n");
             printf("      --help     display this help and exit\n");
             return ERROR;
+        }
+        else{
+            str = strtok(cmd, "-");
+            if(str == NULL){
+                printf("cd: Permission\n");
+                printf("Try 'cd --help' for more information.\n");
+                return ERROR;
             }
              else {
             if (cmd[1] == '\0') {
