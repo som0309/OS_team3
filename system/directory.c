@@ -30,6 +30,7 @@ int readNode(DirectoryTree *currentDirectoryTree, char *temp) {
     //Directory.txt 파일에서 현재 저장된 파일 및 디렉토리 정보를 가져와 구조체로 만들어 Tree에 넣는 메소드 
     DirectoryNode *newNode = (DirectoryNode *)malloc(sizeof(DirectoryNode)), *tempNode = NULL;
     char *nodePath;
+    char *tempPath;
 
     newNode->firstChild = NULL;
     newNode->nextSibling = NULL;
@@ -38,13 +39,19 @@ int readNode(DirectoryTree *currentDirectoryTree, char *temp) {
     //폴더 및 파일명 저장 
     nodePath = strtok(temp, " ");
     strncpy(newNode->name, nodePath, MAX_NAME);
+    if (*(newNode->name) == '.'){     //숨김 속성의 파일 혹은 폴더라면 
+        newNode->viewType = '-';
+    }
+    else{
+        newNode->viewType = 's';
+    }
     //폴더 및 파일 유형 저장 (-, d, l 등)
     nodePath = strtok(NULL, " ");
     newNode->type = nodePath[0];
     //Node의 Permission 정보 저장 
     nodePath = strtok(NULL, " ");
     newNode->permission.mode = atoi(nodePath);
-    // modeToPermission(newNode);  //permission 정보를 배열에 저장하는 코드 (755의 권한을 크기 9의 배열에 binary하게 표현)
+    Mode2Permission(newNode);  //permission 정보를 배열에 저장하는 코드 (755의 권한을 크기 9의 배열에 binary하게 표현)
     //Node 크기 저장
     nodePath = strtok(NULL, " ");
     newNode->SIZE = atoi(nodePath);
@@ -73,12 +80,54 @@ int readNode(DirectoryTree *currentDirectoryTree, char *temp) {
     return 0;
 }
 
-DirectoryNode *IsExistDir(DirectoryTree *currentDirectoryTree, char *dirName, char type) {
+DirectoryNode* IsExistDir(DirectoryTree *currentDirectoryTree, char *dirName, char type) {
     for (DirectoryNode *current = currentDirectoryTree->current->firstChild; current; current = current->nextSibling) {
-        // printf("%s\n",current->name);
         if (!strcmp(current->name, dirName) && current->type == type) {
             return current;
         }
     }
     return NULL;
+}
+
+void SaveDirectory(DirectoryTree *currentDirectoryTree, Stack* stackDir){
+    Directory = fopen("system/Directory.txt", "w");
+    nodeWrite(currentDirectoryTree, currentDirectoryTree->root, stackDir);
+    fclose(Directory);
+}
+
+void nodeWrite(DirectoryTree *currentDirectoryTree, DirectoryNode* currentNode, Stack* stackDir){
+    char temp[MAX_DIR] = "";
+
+    fprintf(Directory, "%s %c %d ", currentNode->name, currentNode->type, currentNode->permission.mode);
+    fprintf(Directory, "%d %d %d %d %d %d %d", currentNode->SIZE, currentNode->id.UID, currentNode->id.GID, currentNode->date.month, currentNode->date.day, currentNode->date.hour, currentNode->date.minute);
+
+    if (currentNode == currentDirectoryTree->root)
+        fprintf(Directory, "\n");
+    else
+        getPath(currentDirectoryTree, currentNode, stackDir, temp);
+
+    if (currentNode->nextSibling != NULL) {
+        nodeWrite(currentDirectoryTree, currentNode->nextSibling, stackDir);
+    }
+    if (currentNode->firstChild != NULL) {
+        nodeWrite(currentDirectoryTree, currentNode->firstChild, stackDir);
+    }
+}
+
+void getPath(DirectoryTree *dirTree, DirectoryNode *dirNode, Stack *dirStack, char *temp) {
+    DirectoryNode *tmpNode = dirNode->parent;
+
+    if (tmpNode == dirTree->root) {
+        strcpy(temp, "/");
+    } else {
+        while (tmpNode->parent) {
+            Push(dirStack, tmpNode->name);
+            tmpNode = tmpNode->parent;
+        }
+        while (IsEmpty(dirStack) == FALSE) {
+            strcat(temp, "/");
+            strcat(temp, Pop(dirStack));
+        }
+    }
+    fprintf(Directory, " %s\n", temp);
 }

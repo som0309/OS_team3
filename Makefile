@@ -1,5 +1,6 @@
 CC = gcc
 CFLAGS = -Iheader
+LDFLAGS = -lpthread
 ODIR = object
 SDIRS = source system
 
@@ -10,7 +11,7 @@ OBJECTS = $(patsubst %,$(ODIR)/%,$(notdir $(SOURCES:.c=.o)))
 TARGET = LINUXOS
 
 $(TARGET): $(OBJECTS)
-	$(CC) -o $@ $^
+	$(CC) -o $@ $^ $(LDFLAGS)
 
 $(ODIR)/%.o: source/%.c | $(ODIR)
 	$(CC) $(CFLAGS) -c $< -o $@

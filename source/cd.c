@@ -1,60 +1,45 @@
 #include "../header/main.h"
 
-DirectoryTreeNode* IsExistDir(DirectoryTree* dirTree, char* dirName, char type)
+int HasPermission(DirectoryNode* dirNode, char o)
 {
-    //variables
-    DirectoryTreeNode* returnNode = NULL;
-
-    returnNode = dirTree->current->LeftChild;
-
-    while(returnNode != NULL){
-        if(strcmp(returnNode->name, dirName) == 0 && returnNode->type == type)
-            break;
-        returnNode = returnNode->RightSibling;
-    }
-    return returnNode;
-}
-
-int HasPermission(DirectoryTreeNode* dirNode, char o)
-{
-    if(usrList->current->UID == 0)
+    if(userList->current->id.UID == 0)
         return 0;
 
-    if(usrList->current->UID == dirNode->UID){
+    if(userList->current->id.UID == dirNode->id.UID){
         if(o == 'r'){
-            if(dirNode->permission[0] == 0)
+            if(dirNode->permission.permission[0] == 0)
                 return -1;
             else
                 return 0;
         }
         if(o == 'w'){
-            if(dirNode->permission[1] == 0)
+            if(dirNode->permission.permission[1] == 0)
                 return -1;
             else
                 return 0;
         }
         if(o == 'x'){
-            if(dirNode->permission[2] == 0)
+            if(dirNode->permission.permission[2] == 0)
                 return -1;
             else
                 return 0;
         }
     }
-    else if(usrList->current->GID == dirNode->GID){
+    else if(userList->current->id.GID == dirNode->id.GID){
         if(o == 'r'){
-            if(dirNode->permission[3] == 0)
+            if(dirNode->permission.permission[3] == 0)
                 return -1;
             else
                 return 0;
         }
         if(o == 'w'){
-            if(dirNode->permission[4] == 0)
+            if(dirNode->permission.permission[4] == 0)
                 return -1;
             else
                 return 0;
         }
         if(o == 'x'){
-            if(dirNode->permission[5] == 0)
+            if(dirNode->permission.permission[5] == 0)
                 return -1;
             else
                 return 0;
@@ -62,19 +47,19 @@ int HasPermission(DirectoryTreeNode* dirNode, char o)
     }
     else{
         if(o == 'r'){
-            if(dirNode->permission[6] == 0)
+            if(dirNode->permission.permission[6] == 0)
                 return -1;
             else
                 return 0;
         }
         if(o == 'w'){
-            if(dirNode->permission[7] == 0)
+            if(dirNode->permission.permission[7] == 0)
                 return -1;
             else
                 return 0;
         }
         if(o == 'x'){
-            if(dirNode->permission[8] == 0)
+            if(dirNode->permission.permission[8] == 0)
                 return -1;
             else
                 return 0;
@@ -93,16 +78,17 @@ int moveCurrent(DirectoryTree* currentDirectoryTree, char* dirPath)
             currentDirectoryTree->current = currentDirectoryTree->current->parent;
         }
     }
-    else{
-=======
-int moveCurrent(DirectoryTree* currentDirectoryTree, char* dirPath)
-{
-    DirectoryNode* tempNode = NULL;
-    if(strcmp(dirPath,".") == 0){
-    }
-    else if(strcmp(dirPath,"..") == 0){
-        if(currentDirectoryTree->current != currentDirectoryTree->root){
-            currentDirectoryTree->current = currentDirectoryTree->current->parent;
+    else if(strcmp(dirPath,"~") == 0){
+        char* homePath = (char *)malloc(strlen(dirPath));
+        char* userName = NULL;
+        strcpy(userName, currentUser->name);
+        if (userName == NULL){
+            printf("User Name Error\n");
+        }
+        else{
+        homePath = "/home/"+(*userName);
+        movePath(currentDirectoryTree,homePath);
+
         }
     }
     else{
@@ -125,14 +111,8 @@ int movePath(DirectoryTree* currentDirectoryTree, char* dirPath)
     strncpy(tempPath, dirPath, MAX_DIR);
     tempPath[MAX_DIR - 1] = '\0'; // 보안을 위해 널 종료 문자를 추가
     tempNode = currentDirectoryTree->current;
-
-<<<<<<< HEAD
-<<<<<<< HEAD
-    strncpy(tmpPath, dirPath, MAX_DIR);
-    tmpNode = dirTree->current;
-    //입력 값이 루트로 가는 값일 때ㅐ
-=======
-=======
+    
+    //입력 값이 루트로 가는 값일 때
     //if input is root
     if(strcmp(dirPath, "/") == 0){
         currentDirectoryTree->current = currentDirectoryTree->root;
@@ -148,10 +128,6 @@ int movePath(DirectoryTree* currentDirectoryTree, char* dirPath)
             str = strtok(tempPath, "/");
         }
         while(str != NULL){
-<<<<<<< HEAD
-<<<<<<< HEAD
-            val = MoveCurrent(dirTree, str);
-            //경로가 존재하지 않을 때
 
             val = moveCurrent(currentDirectoryTree, str);
             //if input path doesn't exist
@@ -178,10 +154,19 @@ int cd(DirectoryTree* currentDirectoryTree, char* cmd)
     }
     else if(cmd[0] == '-'){
         if(strcmp(cmd, "--help") == 0){
-            printf("how to use cd: \n");
-            printf("  Change the shell working directory.\n\n");
-            printf("  Options:\n");
-            printf("        --help\t\n");
+            printf("cd: cd [dir]\n");
+            printf("    Change the shell working directory.\n\n");
+            printf("    Change the current directory to DIR. The default DIR is the value of the\n");
+            printf("    HOME shell variable.\n\n");
+            printf("    The variable CDPATH defines the search path for the directory containing\n");
+            printf("    DIR. Alternative directory names in CDPATH are separated by a colon (:).\n");
+            printf("    A null directory name is the same as the current directory. If DIR begins\n");
+            printf("    with a slash (/), then CDPATH is not used.\n\n");
+            printf("    If the directory is not found, and the shell option `cdable_vars' is set,\n");
+            printf("    the word is assumed to be a variable name. If that variable has a value,\n");
+            printf("    its value is used for DIR.\n\n");
+            printf("    Options:\n");
+            printf("      --help     display this help and exit\n");
             return ERROR;
         }
         else{
@@ -191,19 +176,26 @@ int cd(DirectoryTree* currentDirectoryTree, char* cmd)
                 printf("Try 'cd --help' for more information.\n");
                 return ERROR;
             }
-            else{
-            printf("cd: Invalid option -- '%s'\n", str);
-            printf("Try 'cd --help' for more information.\n");
-
-            return ERROR;
+             else {
+            if (cmd[1] == '\0') {
+                printf("cd: Invalid option -- 'none'\n");
+            } else if (cmd[1] == '-') {
+                if (cmd[2] == '\0') {
+                    printf("cd: Invalid option -- '-'\n");
+                } else {
+                    printf("cd: Invalid option -- '-'\n");
+                }
+            } else {
+                printf("cd: Invalid option -- '%c'\n", cmd[1]);
             }
+            printf("Try 'cd --help' for more information.\n");
+            return ERROR;
         }
     }
     else{
         tempNode = IsExistDir(currentDirectoryTree, cmd, 'd');
         if(tempNode != NULL){
-            // if(HasPermission(tempNode, 'r') != 0){
-                if(0){
+            if(HasPermission(tempNode, 'r') != 0){
                 printf("-bash: cd: '%s': Permission denied.\n", cmd);
                 return ERROR;
             }
@@ -219,5 +211,5 @@ int cd(DirectoryTree* currentDirectoryTree, char* cmd)
             return ERROR;
         }
     }
-    return 0;
+        return 0;
 }

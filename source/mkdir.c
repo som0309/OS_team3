@@ -1,4 +1,22 @@
 #include "../header/main.h"
+int Mode2Permission(DirectoryNode* dirNode)
+{
+    char buffer[4];
+    int tmp;
+
+    for(int i=0;i<9;i++)
+        dirNode->permission.permission[i] = 0;
+
+    sprintf(buffer, "%d", dirNode->permission.mode);
+
+    for(int i=0;i<3;i++){
+        tmp = buffer[i] - '0';
+        for (int j = 2 ; j >= 0 ; j--)
+        {
+            dirNode->permission.permission[3*i+j] = tmp%2;
+            tmp /= 2;
+        }
+    }
 
 int HasPermission(DirectoryNode* dirNode, char o)
 {
@@ -73,7 +91,7 @@ int MakeDir(DirectoryTree* dirTree, char* dirName, char type)
     DirectoryNode* NewNode = (DirectoryNode*)malloc(sizeof(DirectoryNode));
     DirectoryNode* tmpNode = NULL;
 
-    if(HasPermission(dirTree->current, 'w') != 0){
+    if(HasPermission(currentDirectoryTree->current, 'w') != 0){
         printf("mkdir: '%s' Can not create directory: Permission denied.\n", dirName);
         free(NewNode);
         return -1;
@@ -83,7 +101,7 @@ int MakeDir(DirectoryTree* dirTree, char* dirName, char type)
         free(NewNode);
         return -1;
     }
-    tmpNode = IsExistDir(dirTree, dirName, type);
+    tmpNode = IsExistDir(currentDirectoryTree, dirName, type);
     if(tmpNode != NULL && tmpNode->type == 'd'){
         printf("mkdir: '%s' Can not create directory: File exists \n", dirName);
         free(NewNode);
@@ -92,47 +110,47 @@ int MakeDir(DirectoryTree* dirTree, char* dirName, char type)
     time(&ltime);
     today = localtime(&ltime);
 
-    NewNode->LeftChild = NULL;
-    NewNode->RightSibling = NULL;
+    NewNode->firstChild = NULL;
+    NewNode->nextSibling = NULL;
 
     strncpy(NewNode->name, dirName, MAX_NAME);
     if(dirName[0] == '.'){
         NewNode->type = 'd';
         //rwx------
-        NewNode->mode = 700;
+        NewNode->permission.mode = 700;
         NewNode->SIZE = 4096;
     }
     else if(type == 'd'){
         NewNode->type = 'd';
         //rwxr-xr-x
-        NewNode->mode = 755;
+        NewNode->permission.mode = 755;
         NewNode->SIZE = 4096;
     }
     else{
         NewNode->type = 'f';
         //rw-r--r--
-        NewNode->mode = 644;
+        NewNode->permission.mode = 644;
         NewNode->SIZE = 0;
     }
     Mode2Permission(NewNode);
-    NewNode->UID = usrList->current->UID;
-    NewNode->GID = usrList->current->GID;
-    NewNode->month = today->tm_mon + 1;
-    NewNode->day = today->tm_mday;
-    NewNode->hour = today->tm_hour;
-    NewNode->minute = today->tm_min;
-    NewNode->Parent = dirTree->current;
+    NewNode->id.UID = userList->current->id.UID;
+    NewNode->id.GID = userList->current->id.GID;
+    NewNode->date.month = today->tm_mon + 1;
+    NewNode->date.day = today->tm_mday;
+    NewNode->date.hour = today->tm_hour;
+    NewNode->date.minute = today->tm_min;
+    NewNode->parent = currentDirectoryTree->current;
 
-    if(dirTree->current->LeftChild == NULL){
-        dirTree->current->LeftChild = NewNode;
+    if(currentDirectoryTree->current->firstChild == NULL){
+        currentDirectoryTree->current->firstChild = NewNode;
     }
     else{
-        tmpNode = dirTree->current->LeftChild;
+        tmpNode = currentDirectoryTree->current->firstChild;
 
-        while(tmpNode->RightSibling!= NULL){
-            tmpNode = tmpNode->RightSibling;
+        while(tmpNode->nextSibling!= NULL){
+            tmpNode = tmpNode->nextSibling;
         }
-        tmpNode->RightSibling = NewNode;
+        tmpNode->nextSibling = NewNode;
     }
 
     return 0;
@@ -160,11 +178,13 @@ char* getDir(char* dirPath)
 
 void* mkdirThread(void* arg) {
     ThreadTree* threadTree = (ThreadTree*)arg;
-    DirectoryTree* dirTree = threadTree->threadTree;
+  
+    DirectoryTree* currentDirectoryTree = threadTree->threadTree;
     char* cmd = threadTree->command;
     int option = threadTree->option;
 
-    DirectoryNode* tmpNode = dirTree->current;
+    DirectoryNode* tmpNode = currentDirectoryTree->current;
+
     char tmp[MAX_DIR];
     char pStr[MAX_DIR];
     char tmpStr[MAX_DIR];
@@ -175,13 +195,17 @@ void* mkdirThread(void* arg) {
     strncpy(tmp, cmd, MAX_DIR);
 
     if (strstr(cmd, "/") == NULL) {
-        MakeDir(dirTree, cmd, 'd');
+
+        MakeDir(currentDirectoryTree, cmd, 'd');
+
     } 
     else if (option == 1) {
         int length = strlen(tmp);
         int flag = 0;
         if (tmp[0] == '/') {
-            dirTree->current = dirTree->root;
+
+            currentDirectoryTree->current = currentDirectoryTree->root;
+
             flag = 1;
         }
         if (tmp[length - 1] == '/') {
@@ -194,21 +218,25 @@ void* mkdirThread(void* arg) {
             if (tmp[flag] == '/') {
                 directoryName[--directoryLength] = '\0';
                 strncpy(tmpStr, pStr, flag - 1);
-                directoryExist = MoveCurrent(dirTree, directoryName);
+
+                directoryExist = moveCurrent(currentDirectoryTree, directoryName);
                 if (directoryExist == -1) {
-                    MakeDir(dirTree, directoryName, 'd');
-                    directoryExist = MoveCurrent(dirTree, directoryName);
+                    MakeDir(currentDirectoryTree, directoryName, 'd');
+                    directoryExist = moveCurrent(currentDirectoryTree, directoryName);
+
                 }
                 directoryLength = 0;
             }
         }
         directoryName[directoryLength] = '\0';
-        MakeDir(dirTree, directoryName, 'd');
-        dirTree->current = tmpNode;
+
+        MakeDir(currentDirectoryTree, directoryName, 'd');
+        currentDirectoryTree->current = tmpNode;
     } 
     else {
         char* p_directory = getDir(cmd);
-        directoryExist = MovePath(dirTree, p_directory);
+        directoryExist = movePath(currentDirectoryTree, p_directory);
+
         if (directoryExist != 0) {
             printf("mkdir: '%s': No such file or directory.\n", p_directory);
         } 
@@ -219,14 +247,17 @@ void* mkdirThread(void* arg) {
                 p_directory_name = str;
                 str = strtok(NULL, "/");
             }
-            MakeDir(dirTree, p_directory_name, 'd');
-            dirTree->current = tmpNode;
+
+            MakeDir(currentDirectoryTree, p_directory_name, 'd');
+            currentDirectoryTree->current = tmpNode;
+
         }
     }
     pthread_exit(NULL);
 }
 
-int Mkdir(DirectoryTree* dirTree, char* cmd)
+int Mkdir(DirectoryTree* currentDirectoryTree, char* cmd)
+
 {
     DirectoryNode *tmpNode = NULL;
     char *str;
@@ -242,7 +273,8 @@ int Mkdir(DirectoryTree* dirTree, char* cmd)
     
     pthread_t threadPool[MAX_THREAD];
     ThreadTree threadTree[MAX_THREAD];
-    tmpNode = dirTree->current;
+
+    tmpNode = currentDirectoryTree->current;
 
     if (cmd[0] == '-') {
         if (!strcmp(cmd, "-p")) {
@@ -253,7 +285,7 @@ int Mkdir(DirectoryTree* dirTree, char* cmd)
                 return -1;
             }
             while (str) {
-                threadTree[count].threadTree = dirTree;
+                threadTree[count].threadTree = currentDirectoryTree;
                 threadTree[count].option = 1;
                 threadTree[count++].command = str;
                 str = strtok(NULL, " ");
@@ -279,11 +311,11 @@ int Mkdir(DirectoryTree* dirTree, char* cmd)
         }
     } else {
         str = strtok(NULL, " ");
-        threadTree[count].threadTree = dirTree;
+        threadTree[count].threadTree = currentDirectoryTree;
         threadTree[count].option = 0;
         threadTree[count++].command = cmd;
         while (str) {
-            threadTree[count].threadTree = dirTree;
+            threadTree[count].threadTree = currentDirectoryTree;
             threadTree[count].option = 0;
             threadTree[count++].command = str;
             str = strtok(NULL, " ");
@@ -294,7 +326,6 @@ int Mkdir(DirectoryTree* dirTree, char* cmd)
         pthread_join(threadPool[i], NULL);
     }
     return 0;
+
 }
-
-
 

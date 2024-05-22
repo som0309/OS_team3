@@ -1,28 +1,35 @@
 #include "../header/main.h"
+#ifdef _WIN32
+#include <conio.h>
+#else
 #include <termios.h>
+#endif
+
 
 #define PAGELEN 24
 #define LINELEN 512
 
 int getch(void) // 입력 버퍼 X, 문자 표시 X 입력 함수
-{
-    int ch;
+{  
+    #ifdef _WIN32
+        return _getch();    // int ch;
+    #else
+        struct termios old;
+        struct termios new;
 
-    struct termios old;
-    struct termios new;
+        tcgetattr(0, &old);
 
-    tcgetattr(0, &old);
+        new = old;
+        new.c_lflag &= ~(ICANON | ECHO);
+        new.c_cc[VMIN] = 1;
+        new.c_cc[VTIME] = 0;
 
-    new = old;
-    new.c_lflag &= ~(ICANON | ECHO);
-    new.c_cc[VMIN] = 1;
-    new.c_cc[VTIME] = 0;
+        tcsetattr(0, TCSAFLUSH, &new);
+        ch = getchar();
+        tcsetattr(0, TCSAFLUSH, &old);
 
-    tcsetattr(0, TCSAFLUSH, &new);
-    ch = getchar();
-    tcsetattr(0, TCSAFLUSH, &old);
-
-    return ch;
+        return ch;
+    #endif
 }
 
 int more_line()
