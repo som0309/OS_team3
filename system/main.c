@@ -14,8 +14,8 @@ int main(){
     dirStack = InitializeStack();
 
     login(userList, linuxFileSystem);
-    // Start();
-    // SaveUserList(userList);
+    Start();
+    SaveUserList(userList);
 
     while(1){
         printPrompt(linuxFileSystem, dirStack);

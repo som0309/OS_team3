@@ -88,3 +88,46 @@ DirectoryNode* IsExistDir(DirectoryTree *currentDirectoryTree, char *dirName, ch
     }
     return NULL;
 }
+
+void SaveDirectory(DirectoryTree *currentDirectoryTree, Stack* stackDir){
+    Directory = fopen("system/Directory.txt", "w");
+    nodeWrite(currentDirectoryTree, currentDirectoryTree->root, stackDir);
+    fclose(Directory);
+}
+
+void nodeWrite(DirectoryTree *currentDirectoryTree, DirectoryNode* currentNode, Stack* stackDir){
+    char temp[MAX_DIR] = "";
+
+    fprintf(Directory, "%s %c %d ", currentNode->name, currentNode->type, currentNode->permission.mode);
+    fprintf(Directory, "%d %d %d %d %d %d %d", currentNode->SIZE, currentNode->id.UID, currentNode->id.GID, currentNode->date.month, currentNode->date.day, currentNode->date.hour, currentNode->date.minute);
+
+    if (currentNode == currentDirectoryTree->root)
+        fprintf(Directory, "\n");
+    else
+        getPath(currentDirectoryTree, currentNode, stackDir, temp);
+
+    if (currentNode->nextSibling != NULL) {
+        nodeWrite(currentDirectoryTree, currentNode->nextSibling, stackDir);
+    }
+    if (currentNode->firstChild != NULL) {
+        nodeWrite(currentDirectoryTree, currentNode->firstChild, stackDir);
+    }
+}
+
+void getPath(DirectoryTree *dirTree, DirectoryNode *dirNode, Stack *dirStack, char *temp) {
+    DirectoryNode *tmpNode = dirNode->parent;
+
+    if (tmpNode == dirTree->root) {
+        strcpy(temp, "/");
+    } else {
+        while (tmpNode->parent) {
+            Push(dirStack, tmpNode->name);
+            tmpNode = tmpNode->parent;
+        }
+        while (IsEmpty(dirStack) == FALSE) {
+            strcat(temp, "/");
+            strcat(temp, Pop(dirStack));
+        }
+    }
+    fprintf(Directory, " %s\n", temp);
+}

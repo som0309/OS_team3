@@ -122,6 +122,9 @@ char* Pop(Stack *s);
 int readNode(DirectoryTree *currentDirectoryTree, char *temp);
 void createAndAttachNode(DirectoryTree *currentDirectoryTree, char *str, DirectoryNode *newNode, DirectoryNode *tempNode);
 DirectoryNode* IsExistDir(DirectoryTree *currentDirectoryTree, char *dirName, char type);
+void SaveDirectory(DirectoryTree *currentDirectoryTree, Stack* stackDir);
+void nodeWrite(DirectoryTree *currentDirectoryTree, DirectoryNode* currentNode, Stack* stackDir);
+void getPath(DirectoryTree *dirTree, DirectoryNode *dirNode, Stack *dirStack, char *temp);
 
 //pwd.c
 void inputStack(DirectoryTree *currentDirectory, DirectoryNode *currentNode, Stack *dirStack);
@@ -134,6 +137,7 @@ int cd(DirectoryTree *currentDirectoryTree, char *cmd);
 int movePath(DirectoryTree *currentDirectoryTree, char *dirPath);
 int moveCurrent(DirectoryTree *currentDirectoryTree, char *dirPath);
 int HasPermission(DirectoryNode* dirNode, char o);
+
 //ls.c
 void chmod_print(int chmodinfo);
 int treePreOrder(DirectoryNode* directoryNode, int nodeNum);
@@ -145,8 +149,8 @@ DirectoryNode* find_directory(DirectoryTree* currentDirectoryTree, char* name);
 void clear_permissions(Permission* p);
 void apply_absolute_mode(Permission* p, const char* modeStr);
 void apply_relative_mode(Permission* p, const char* modeStr);
-void parse_permission_info(char* permissionInfo, Permission* change_mod);
 void ch_mod(DirectoryTree* currentDirectoryTree, char* permissionInfo, char* nodeName);
+int parse_permission_info(char* permissionInfo, Permission* change_mod);
 
 //mkdir.c
 int MakeDir(DirectoryTree* currentDirectoryTree, char* dirName, char type);
@@ -163,14 +167,20 @@ void cat(DirectoryTree* currentDirectoryTree, char *filename, int numberFlag, ch
 UserList *loadUserList();
 UserNode *userExistence(UserList *userList, char *name);
 int readUser(UserList *userList, char *tmp);
+void SaveUserList(UserList *userList);
+void userWrite(UserList* userList, UserNode* userNode);
 
 //linux.c
 void login(UserList *UsrList, DirectoryTree *dirTree);
 void printPrompt(DirectoryTree *dirTree, Stack *dirStack);
+void Start();
 
 //time
 time_t ltime;
 struct tm *today;
+void getToday(Date *date);
+void getWeekday(int type);
+void getMonth(int type);
 
 DirectoryTree* linuxFileSystem;
 Stack* dirStack;

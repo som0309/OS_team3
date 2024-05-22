@@ -92,3 +92,21 @@ void printPrompt(DirectoryTree *currentDirectoryTree, Stack *dirStack) {
     DEFAULT;
     printf("%c ", printCursor);
 }
+
+void Start(){
+    Date tmpDate;
+    getToday(&tmpDate);
+    printf("Welcome to OS_01_team3 LINUX OS!!!\n\n");
+    printf("System information as of ");
+    getWeekday(tmpDate.weekday);
+    getMonth(tmpDate.month);
+    printf("%d %02d:%02d:%02d UTC %d\n\n", tmpDate.day, tmpDate.hour, tmpDate.minute, tmpDate.second, tmpDate.year);
+    printf("You can use the command displayed below.\n");
+    printf("\t- ls\n\t- cat\n\t- cd\n\t- mkdir\n\t- touch\n\t- mv\n\t- chmod\n\t- more\n\t- cp\n\t- grep\n\t- pwd\n\n");
+    printf("The 'exit' command allows you to exit the program.\n\n");
+    printf("Last login: ");
+    getWeekday(userList->current->date.weekday);
+    getMonth(userList->current->date.month);
+    printf("%d %02d:%02d:%02d %d\n", userList->current->date.day, userList->current->date.hour, userList->current->date.minute, userList->current->date.second, userList->current->date.year);
+
+}

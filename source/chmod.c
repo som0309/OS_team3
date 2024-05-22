@@ -24,7 +24,6 @@ void clear_permissions(Permission* change_mod) {
 void apply_absolute_mode(Permission* change_mod, const char* permissionInfoStr) {
     int mode = atoi(permissionInfoStr);
     change_mod->mode = mode;
-    
     // Initialize all permissions to 0
     for (int i = 0; i < 9; ++i) {
         change_mod->permission[i] = 0;
@@ -58,19 +57,35 @@ void apply_relative_mode(Permission* change_mod, const char* permissionInfoStr) 
     }
 }
 
-void parse_permission_info(char* permissionInfo, Permission* change_mod) {
+int parse_permission_info(char* permissionInfo, Permission* change_mod) {
     if (strchr(permissionInfo, '+') != NULL || strchr(permissionInfo, '-') != NULL || strchr(permissionInfo, '=') != NULL) {
         apply_relative_mode(change_mod, permissionInfo);
-    } else {
+        return SUCCESS;
+    } else if (permissionInfo[0] - '0' < 8 && permissionInfo[1] - '0' < 8 && permissionInfo[2] - '0' < 8 && strlen(permissionInfo) == 3) {
         apply_absolute_mode(change_mod, permissionInfo);
+        return SUCCESS;
+    }
+    else {
+        printf("chmod: Invalid Mode: \'%s\'\n", permissionInfo);
+        printf("Try \'chmod --help\' for more information.\n");
+        return ERROR;
     }
 }
 
 void ch_mod(DirectoryTree* currentDirectoryTree, char* permissionInfo, char* nodeName)
 //DirectoryTree, 바꿀 권한값, 
-{
+{   
 	Permission* change_mod = (Permission*)malloc(sizeof(Permission));
-	parse_permission_info(permissionInfo, change_mod);
+    if (!strcmp(permissionInfo, "--help")){
+            printf("Usage: chmod [OPTION]... OCTAL-MODE FILE...\n");
+            printf("Change the mode of each FILE to MODE.\n\n");
+            printf("  Options:\n");
+            printf("  -R, --recursive        change files and directories recursively\n");
+            printf("      --help     Display this help and exit\n");
+            return;
+    }
+	if(parse_permission_info(permissionInfo, change_mod)) return;
+    
 	DirectoryNode* temp = find_directory(currentDirectoryTree, nodeName);
 	//IsExistDir로 전달할 때 파일인지 폴더인지 타입을 알려줘야 함.
 	if (temp != NULL)

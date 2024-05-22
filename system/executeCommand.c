@@ -39,6 +39,11 @@ void executeCommand(DirectoryTree *currentDirectoryTree, char *command) {
         catInterface(currentDirectoryTree, var);
     } else if(!strcmp(var, "chmod")) {
         var = strtok(NULL, " ");
+        if (var == NULL) {
+            printf("chmod: Invalid option\n");
+            printf("Try \'chmod --help\' for more information.\n");
+            return;
+        }
         var1 = strtok(NULL, " ");
         //문자열 혹은 숫자로 권한을 받아서 Permission change_mod로 바꾸는 코드 추가 필요
         ch_mod(currentDirectoryTree, var, var1);

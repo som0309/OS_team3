@@ -18,7 +18,6 @@ char* catInterface(DirectoryTree* currentDirectoryTree, char* var){
 
         if (var != NULL)
         {
-            printf("READ");
             cat(currentDirectoryTree, var, numberFlag, redirectFilename);
         }
         else

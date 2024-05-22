@@ -58,3 +58,27 @@ int readUser(UserList *userList, char *tmp) {
     }
     return SUCCESS;
 }
+void userWrite(UserList* userList, UserNode* userNode)
+{
+    time(&ltime);
+    today = localtime(&ltime);
+
+    userList->current->date.year = today->tm_year + 1900;
+    userList->current->date.month = today->tm_mon + 1;
+    userList->current->date.weekday = today->tm_wday;
+    userList->current->date.day = today->tm_mday;
+    userList->current->date.hour = today->tm_hour;
+    userList->current->date.minute = today->tm_min;
+    userList->current->date.second = today->tm_sec;
+
+    fprintf(User, "%s %d %d %d %d %d %d %d %d %d %s\n", userNode->name, userNode->id.UID, userNode->id.GID, userNode->date.year, userNode->date.month, userNode->date.weekday, userNode->date.day, userNode->date.hour, userNode->date.minute, userNode->date.second, userNode->dir);
+
+    if (userNode->nextNode != NULL) {
+        userWrite(userList, userNode->nextNode);
+    }
+
+}
+void SaveUserList(UserList *userList){
+    userWrite(userList, userList->head);
+    fclose(Directory);
+}
