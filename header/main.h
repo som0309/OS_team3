@@ -17,6 +17,7 @@
 #define GREEN printf("\x1b[32m")
 #define MAX_NAME 256
 #define MAX_DIR 1024
+#define MAX_THREAD 20
 #define ERROR -1
 #define SUCCESS 0
 // 날짜 정보 - 파일이나 폴더의 수정 시간, 접근 시간에서 사용
@@ -92,15 +93,15 @@ typedef struct stack {
 } Stack;
 
 // 멀티스레딩에서 사용할 threadTree - 파일 및 폴더 생성 단계에서 사용 변경 필요
-// typedef struct threadTree {
-//     DirectoryTree *threadTree;
-//     char *fileName;
-//     char *content;    //파일의 내용 저장
-//     char *command;    //사용자가 입력한 명령어 저장 
-//     char *usrName;    //파일이나 디렉토리의 소유자
-//     int mode;         //접근 권한
-//     int option;       //옵션 
-// } ThreadTree;
+typedef struct threadTree {
+    DirectoryTree *threadTree;
+    char *fileName;
+    char *content;    //파일의 내용 저장
+    char *command;    //사용자가 입력한 명령어 저장 
+    char *usrName;    //파일이나 디렉토리의 소유자
+    int mode;         //접근 권한
+    int option;       //옵션 
+} ThreadTree;
 
 
 //====================================================================================================================
@@ -159,6 +160,10 @@ int readUser(UserList *userList, char *tmp);
 //linux.c
 void login(UserList *UsrList, DirectoryTree *dirTree);
 void printPrompt(DirectoryTree *dirTree, Stack *dirStack);
+
+//time
+time_t ltime;
+struct tm *today;
 
 DirectoryTree* linuxFileSystem;
 Stack* dirStack;

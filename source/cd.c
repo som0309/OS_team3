@@ -94,20 +94,6 @@ int moveCurrent(DirectoryTree* currentDirectoryTree, char* dirPath)
         }
     }
     else{
-
-    }
-}
-int moveCurrent(DirectoryTree* currentDirectoryTree, char* dirPath)
-{
-    DirectoryNode* tempNode = NULL;
-    if(strcmp(dirPath,".") == 0){
-    }
-    else if(strcmp(dirPath,"..") == 0){
-        if(currentDirectoryTree->current != currentDirectoryTree->root){
-            currentDirectoryTree->current = currentDirectoryTree->current->parent;
-        }
-    }
-    else{
         tempNode = IsExistDir(currentDirectoryTree, dirPath, 'd');
         if(tempNode != NULL){
             currentDirectoryTree->current = tempNode;
@@ -179,7 +165,7 @@ int cd(DirectoryTree* currentDirectoryTree, char* cmd)
         else{
             str = strtok(cmd, "-");
             if(str == NULL){
-                printf("cd: Permission denied.\n");
+                printf("cd: Permission\n");
                 printf("Try 'cd --help' for more information.\n");
                 return ERROR;
             }
