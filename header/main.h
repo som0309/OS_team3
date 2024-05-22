@@ -133,7 +133,7 @@ int pwd(DirectoryTree *currentDirectory, Stack *dirStack, char *option);
 int cd(DirectoryTree *currentDirectoryTree, char *cmd);
 int movePath(DirectoryTree *currentDirectoryTree, char *dirPath);
 int moveCurrent(DirectoryTree *currentDirectoryTree, char *dirPath);
-
+int HasPermission(DirectoryNode* dirNode, char o);
 //ls.c
 void chmod_print(int chmodinfo);
 int treePreOrder(DirectoryNode* directoryNode, int nodeNum);
@@ -151,6 +151,13 @@ void ch_mod(DirectoryTree* currentDirectoryTree, char* permissionInfo, char* nod
 //mkdir.c
 int MakeDir(DirectoryTree* currentDirectoryTree, char* dirName, char type);
 int Mkdir(DirectoryTree* currentDirectoryTree, char* cmd);
+char* getDir(char* dirPath);
+void* mkdirThread(void* arg);
+int Mode2Permission(DirectoryNode* dirNode);
+
+//cat.c
+char* catInterface(DirectoryTree* currentDirectoryTree, char* var);
+void cat(DirectoryTree* currentDirectoryTree, char *filename, int numberFlag, char *redirectFilename);
 
 //userList.c
 UserList *loadUserList();
@@ -170,5 +177,6 @@ Stack* dirStack;
 UserList* userList;
 FILE* Directory;
 FILE* User;
+UserNode* currentUser;
 
 #endif

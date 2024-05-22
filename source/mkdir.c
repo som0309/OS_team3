@@ -1,5 +1,25 @@
 #include "../header/main.h"
+int Mode2Permission(DirectoryNode* dirNode)
+{
+    char buffer[4];
+    int tmp;
 
+    for(int i=0;i<9;i++)
+        dirNode->permission.permission[i] = 0;
+
+    sprintf(buffer, "%d", dirNode->permission.mode);
+
+    for(int i=0;i<3;i++){
+        tmp = buffer[i] - '0';
+        for (int j = 2 ; j >= 0 ; j--)
+        {
+            dirNode->permission.permission[3*i+j] = tmp%2;
+            tmp /= 2;
+        }
+    }
+
+    return 0;
+}
 int MakeDir(DirectoryTree* currentDirectoryTree, char* dirName, char type)
 {
     DirectoryNode* NewNode = (DirectoryNode*)malloc(sizeof(DirectoryNode));
@@ -126,10 +146,10 @@ void* mkdirThread(void* arg) {
             if (tmp[flag] == '/') {
                 directoryName[--directoryLength] = '\0';
                 strncpy(tmpStr, pStr, flag - 1);
-                directoryExist = MoveCurrent(currentDirectoryTree, directoryName);
+                directoryExist = moveCurrent(currentDirectoryTree, directoryName);
                 if (directoryExist == -1) {
                     MakeDir(currentDirectoryTree, directoryName, 'd');
-                    directoryExist = MoveCurrent(currentDirectoryTree, directoryName);
+                    directoryExist = moveCurrent(currentDirectoryTree, directoryName);
                 }
                 directoryLength = 0;
             }
@@ -140,7 +160,7 @@ void* mkdirThread(void* arg) {
     } 
     else {
         char* p_directory = getDir(cmd);
-        directoryExist = MovePath(currentDirectoryTree, p_directory);
+        directoryExist = movePath(currentDirectoryTree, p_directory);
         if (directoryExist != 0) {
             printf("mkdir: '%s': No such file or directory.\n", p_directory);
         } 
@@ -227,6 +247,3 @@ int Mkdir(DirectoryTree* currentDirectoryTree, char* cmd)
     }
     return 0;
 }
-
-
-

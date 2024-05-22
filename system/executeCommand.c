@@ -36,34 +36,12 @@ void executeCommand(DirectoryTree *currentDirectoryTree, char *command) {
         ls(currentDirectoryTree, var);
     } else if (!strcmp(var, "cat")) {
         var = strtok(NULL, " ");
-
-        // -n 옵션 및 > 'filename' 옵션을 확인
-        int numberFlag = 0; // -n 옵션 여부. 줄번호 출력 여부.
-        char *redirectFilename = NULL;
-        if (var != NULL && !strcmp(var, "-n"))
-        {
-            numberFlag = 1;
-            var = strtok(NULL, " ");
-        }
-        if (var != NULL && var[0] == '>')
-        {
-            redirectFilename = var + 1; // '>' 다음 문자열을 파일명으로 설정
-            var = strtok(NULL, " ");
-        }
-
-        if (var != NULL)
-        {
-            cat(currentDirectoryTree, var, numberFlag, redirectFilename);
-        }
-        else
-        {
-            printf("Usage: cat [-n] [filename] [> 'filename']\n");
-        }
+        catInterface(currentDirectoryTree, var);
     } else if(!strcmp(var, "chmod")) {
         var = strtok(NULL, " ");
         var1 = strtok(NULL, " ");
         //문자열 혹은 숫자로 권한을 받아서 Permission change_mod로 바꾸는 코드 추가 필요
-        ch_mod(currentDirectoryTree, var1, var);
+        ch_mod(currentDirectoryTree, var, var1);
         //chmod 코드 구현
     } else if (!strcmp(var, "grep")) {
         var = strtok(NULL, " ");

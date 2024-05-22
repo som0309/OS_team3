@@ -24,6 +24,7 @@ void login(UserList *userList, DirectoryTree *currentDirectoryTree) {
         tempUser = userExistence(userList, userName);
         if (tempUser) {
             userList->current = tempUser;
+            currentUser = tempUser;
             break;
         }
         printf("'%s' User not found\n", userName);
